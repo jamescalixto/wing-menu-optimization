@@ -1,5 +1,25 @@
-function setCounter() {
-    
+function makeNewOrder() {
+    // Get a new order between the defined wing range.
+    let MIN_WINGS = 10;
+    let MAX_WINGS = 400;
+    var num_wings = Math.floor(Math.random() * (MAX_WINGS - MIN_WINGS + 1) ) + MIN_WINGS;
+
+    // Set target and current counters to target and 0, respectively.
+    document.getElementById("order-target-wings-number").innerHTML = num_wings;
+    document.getElementById("order-current-wings-number").innerHTML = 0;
+
+    // Reset pricing information.
+    document.getElementById("order-target-price").innerHTML = "???";
+    document.getElementById("order-current-price").innerHTML = "$0.00";
+
+    // Reset message.
+    document.getElementById("order-message-number").innerHTML = num_wings;
+}
+
+function buildMenuItems(menu_cost) {
+    for (row of menu_cost) {
+        createMenuItem(parseInt(row.wings, 10), parseFloat(row.cost));
+    }
 }
 
 function createMenuItem(wings, cost) {

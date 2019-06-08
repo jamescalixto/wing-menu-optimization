@@ -42,25 +42,35 @@ header {
 }
 
 .order-line {
-    width: 600px;
+    width: 500px;
     display: flex;
     justify-content: center;
     margin: auto;
 }
 
-.order-line-item {
-    width: 150px;
-    margin-right: 30px;
+.order-line-item-wings {
+    width: 120px;
+    margin: auto 20px;
     text-align: right;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+.order-line-item-price {
+    width: 100px;
+    margin: auto 0px auto 0px;
+    text-align: right;
+    vertical-align: middle;
     font-weight: bold;
 }
 
 .order-line-item-label {
     height: 30px;
     width: 160px;
-    margin-right: 30px;
+    margin: auto 0px auto 0px;
     text-align: right;
-    line-height: 30px;
+    display: flex;
+    align-items: center;
     padding: 20px auto;
     font-size: 0.8em;
 }
@@ -111,7 +121,6 @@ header {
     margin: auto;
     display: flex;
     flex-wrap: wrap;
-    color: gray;
     justify-content: center;
     width: 90%;
 }
@@ -119,6 +128,7 @@ header {
 .menu-item {
     width: 100px;
     margin: 10px 20px 10px 20px;
+    color: gray;
 }
 
 .wings {
@@ -157,4 +167,12 @@ header {
 .select-button:hover {
     background-color: dimgray;
     color: gainsboro;
+}
+
+.odometer.odometer-animating-up .odometer-ribbon-inner, .odometer.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
+    -webkit-transition-duration: 1s !important;
+    -moz-transition-duration: 1s !important;
+    -ms-transition-duration: 1s !important;
+    -o-transition-duration: 1s !important;
+    transition-duration: 1s !important
 }
