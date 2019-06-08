@@ -11,8 +11,10 @@
 
     <script type="text/javascript" src="main.js"></script>
     <script type="text/javascript" src="helper/papaparse.js"></script>
+    <script type="text/javascript" src="helper/odometer.js"></script>
 
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="helper/odometer-theme-minimal.css" />
   </head>
 
   <body>
@@ -27,7 +29,9 @@
       <div id="order-container" class="order-container">
         <div id="order-target" class="order-line">
           <div id="order-target-label" class="order-line-item-label">Computer's order:</div>
-          <div id="order-target-wings" class="order-line-item">520 wings</div>
+          <div id="order-target-wings" class="order-line-item">
+            <div id="order-target-wings-number" class="odometer">1</div>
+          </div>
           <div id="order-target-price" class="order-line-item">???</div>
         </div>
         <div id="order-current" class="order-line">
@@ -68,7 +72,7 @@
     </article>
     
     <script type="text/javascript">
-      // Parse all files together.
+      // Parse all files together. Execute code in the callback.
       var files = ["data/menu_cost.csv", "data/optimal_wings.csv"];
       var parsed_files = [];
       for (let file of files) {
