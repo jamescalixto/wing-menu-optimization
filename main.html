@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Are you better at ordering wings than a computer?</title>
+    <meta name="description" content="An integer linear programming approach to ordering wings."/>
+    <meta name="author" content="James Calixto"/>
+
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="helper/papaparse.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <body>
+    <header>
+      <div class="cross-title-background">
+        <h1 class="cross-title">Are you better at ordering wings than a computer?</h1>
+      </div>
+  
+    </header>
+    <article id="article" >
+
+      <div id="order-container" class="order-container">
+        <div id="order-target" class="order-line">
+          <div id="order-target-label" class="order-line-item-label">Computer's order:</div>
+          <div id="order-target-wings" class="order-line-item">520 wings</div>
+          <div id="order-target-price" class="order-line-item">???</div>
+        </div>
+        <div id="order-current" class="order-line">
+          <div id="order-current-label" class="order-line-item-label">Your selection:</div>
+          <div id="order-current-wings" class="order-line-item">0 wings</div>
+          <div id="order-current-price" class="order-line-item">$0.00</div>
+        </div>
+        <div id="order-message" class="order-message">
+          Order from the menu items below to get to 520 wings!
+        </div>
+        <div id="order-button-container" class="order-button-container">
+          <div id="order-button-reset">
+            <button type="button" class="order-button-reset">Next order, please</button>
+          </div>
+          <div id="order-button-check">
+            <button type="button" class="order-button-check">I think I got it</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="button-container" class="button-container"></div>
+
+      <div id="menu-item-template" class="menu-item" style="display:none">
+          <div id="wing-" class="wings">0 wings</div>
+          <div id="cost-" class="cost">$0.00</div>
+          <div id="action-container" class="action-container">
+            <div id="decrement-">
+              <button type="button" class="select-button"><</button>
+            </div>
+            <div id="num-" class="num-selected">0</div>
+            <div id="increment-">
+              <button type="button" class="select-button">></button>
+            </div>
+          </div>
+
+        </div>
+
+    </article>
+    
+    <script type="text/javascript">
+      // Parse all files together.
+      var files = ["data/menu_cost.csv", "data/optimal_wings.csv"];
+      var parsed_files = [];
+      for (let file of files) {
+        Papa.parse(file, {
+          delimiter: ',',
+          download: true,
+          header: true,
+          complete: function(results) {
+            parsed_files.push(results);
+            if (parsed_files.length == files.length) {
+              // Only called once all files are parsed.
+              menu_cost = parsed_files[0].data;
+              optimal_wings = parsed_files[1].data;
+
+              console.log(menu_cost);
+              console.log(optimal_wings);
+
+              for (row of menu_cost) {
+                createMenuItem(parseInt(row.wings, 10), parseFloat(row.cost));
+              }
+            }
+          }
+        });
+      }
+
+    </script>
+</html>
