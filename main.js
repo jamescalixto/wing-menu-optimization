@@ -33,11 +33,6 @@ function setTargetPriceVisibility(revealed, target_price) {
     }
 }
 
-// Displays everything of interest once the check button is clicked.
-function checkAnswer(target_price) {
-    setTargetPriceVisibility(true, target_price);
-}
-
 // Creates a new order and sets up all of the counters and such.
 function makeNewOrder() {
     // Get a new order between the defined wing range.
@@ -143,12 +138,16 @@ function createMenuItem(wings, cost, update_function) {
     let button_item = {
         wings: wings,
         cost: cost,
-        current: clone.querySelectorAll('[id^="user-"]')[0]
+        current: clone.querySelectorAll('[id^="num-"]')[0]
     };
 
     // Rename all children to be unique.
     increment_button.id += wings;
     decrement_button.id += wings;
+    for (let item of clone.children.namedItem("action-container-")
+                            .children.namedItem("num-").children) {
+        item.id += wings;
+    }
     for (let item of clone.children.namedItem("action-container-").children) {
         item.id += wings;
     }
@@ -160,6 +159,16 @@ function createMenuItem(wings, cost, update_function) {
     document.getElementById("button-container").appendChild(clone)
 
     return button_item;
+}
+
+// Displays everything of interest once the check button is clicked.
+function checkAnswer(target_price) {
+    setTargetPriceVisibility(true, target_price);
+}
+
+// Display menu item correction.
+function showMenuItemCorrection() {
+
 }
 
 // When you truly, absolutely need a test function that runs

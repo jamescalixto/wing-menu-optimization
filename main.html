@@ -75,7 +75,7 @@
               <button type="button" id="decrement-button-" class="select-button"><</button>
             </div>
             <div id="num-" class="num-selected">
-              <g id="correct-"></g>
+              <g id="correct-" style="text-decoration: line-through"></g>
               <g id="user-">0</g>
             </div>
             <div id="increment-">
@@ -103,12 +103,13 @@
               menu_cost = parsed_files[0].data;
               optimal_wings = parsed_files[1].data;
 
-              console.log(menu_cost);
-              console.log(optimal_wings);
+              console.log("menu_cost", menu_cost);
+              console.log("optimal_wings", optimal_wings);
 
               // Rebuild the page with a new order.
               var current_order; // Stores current order elements.
               var target_wings; // Target number of wings to order.
+              var optimal_wings_row; // Row of optimal wings values.
               var target_price; // Target price of optimal order, hidden.
               rebuildElements();
               function rebuildElements() {
@@ -118,6 +119,8 @@
                 target_wings = makeNewOrder();
                 target_price = getTargetPrice();
               }
+
+              console.log("optimal_wings_row", optimal_wings_row);
 
               function getTargetPrice() {
                 let target_price = 0;
@@ -131,7 +134,6 @@
                       return parseInt(obj.wings, 10) == item_wings;
                     })[0].cost, 10);
                     target_price += item_quantity * item_cost;
-                    console.log(item_wings, item_quantity, item_cost, item_quantity*item_cost);
                   }
                 }
                 return target_price;
@@ -139,12 +141,13 @@
 
               // Function to update orders when menu counts
               // are changed.
+              var current_cost = 0;
               function updateElements() {
                 // Get total number of wings ordered, and current cost.
                 let current_wings = 0;
-                let current_cost = 0;
+                current_cost = 0;
                 for (let item of current_order) {
-                  current_item_quantity = parseInt(item.current.innerHTML, 10);
+                  current_item_quantity = parseInt(item.current.querySelectorAll('[id^="user-"]')[0].innerHTML, 10);
                   current_item_wings = item.wings * current_item_quantity;
                   current_item_cost = item.cost * current_item_quantity;
                   
@@ -156,19 +159,54 @@
 
                 // Allow us to check our answer if we have enough wings.
                 setCheckButtonStatus(current_wings >= target_wings);
-
-                console.log("update!!", current_wings, target_wings, current_cost);
               }
 
-              console.log(current_order);
+              console.log("current order", current_order);
 
               // Assign callbacks.
               const reset_button = document.getElementById("order-button-reset");
-              reset_button.onclick = rebuildElements;
-
               const check_button = document.getElementById("order-button-check");
+              reset_button.onclick = function() {
+                rebuildElements();
+                setCheckButtonStatus(false);
+              };
               check_button.onclick = function() {
-                checkAnswer(target_price);
+                check_button.disabled = true;
+                check_button.innerHTML = "<- Try again?";
+                setTargetPriceVisibility(true, target_price);
+                if (target_price != current_cost) {
+                  // Case where we did not get the optimal answer.
+                  for (let item_wings in optimal_wings_row) {
+                    if (item_wings != "wings") {
+                      // For each item, get the quantity of the user order.
+                      let item_element = current_order.filter(obj => {
+                        return obj.wings == item_wings;
+                      })[0].current;
+                      let user_quantity = parseInt(item_element.querySelectorAll('[id^="user-"]')[0].innerHTML, 10)
+                      let optimal_quantity = parseInt(optimal_wings_row[item_wings], 10)
+                      if (user_quantity != optimal_quantity) {
+                        // If we ordered an unoptimal amount, apply formatting.
+                        item_element.querySelectorAll('[id^="correct-"]')[0].innerHTML = user_quantity;
+                        item_element.querySelectorAll('[id^="user-"]')[0].innerHTML = optimal_quantity;
+                        item_element.parentElement.parentElement.style.color = "crimson";
+                      } else {
+                        item_element.parentElement.parentElement.style.color = "forestgreen";
+                      }
+                    }
+                  }
+                } else {
+                  // The prices are equal - there may be more than one solution
+                  // and we have a different one in the case, so this covers all possible
+                  // optimal answers.
+                  for (let item_wings in optimal_wings_row) {
+                    if (item_wings != "wings") {
+                      let item_element = current_order.filter(obj => {
+                        return obj.wings == item_wings;
+                      })[0].current;
+                      item_element.parentElement.parentElement.style.color = "forestgreen";
+                    }
+                  }
+                }
               };
             }
           }
