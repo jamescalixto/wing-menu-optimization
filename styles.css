@@ -49,7 +49,7 @@ header {
 }
 
 .order-line-item-wings {
-    width: 120px;
+    width: 150px;
     margin: auto 20px;
     text-align: right;
     vertical-align: middle;
@@ -57,7 +57,7 @@ header {
 }
 
 .order-line-item-price {
-    width: 100px;
+    width: 150px;
     margin: auto 0px auto 0px;
     text-align: right;
     vertical-align: middle;
@@ -97,11 +97,13 @@ header {
     font-size: 0.7em;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
+    transition: background 1s ease;
 }
 
 .order-button-check {
     width: 180px;
     height: 50px;
+    background: none;
     background-color: gainsboro; 
     color: dimgray;
     border-radius: 4px;
@@ -110,11 +112,18 @@ header {
     font-size: 0.7em;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
+    transition: background 1s ease;
 }
 
-.order-button-reset:hover, .order-button-check:hover {
+.order-button-reset:hover:enabled, .order-button-check:hover:enabled {
     background-color: dimgray;
     color: gainsboro;
+}
+
+.order-button-check:disabled {
+    background: 
+        #f39292;
+    cursor: not-allowed;
 }
 
 .button-container {
@@ -128,7 +137,7 @@ header {
 .menu-item {
     width: 100px;
     margin: 10px 20px 10px 20px;
-    color: gray;
+    color: darkgray;
 }
 
 .wings {
@@ -149,7 +158,7 @@ header {
 }
 
 .num-selected {
-    width: 30px;
+    width: 40px;
     margin: auto 5px auto 5px;
     text-align: center;
 }

@@ -30,19 +30,30 @@
         <div id="order-target" class="order-line">
           <div id="order-target-label" class="order-line-item-label">Computer's order:</div>
           <div id="order-target-wings" class="order-line-item-wings">
-            <div id="order-target-wings-number" class="odometer">999</div><g style="vertical-align:middle"> wings</g>
+            <div id="order-target-wings-number" class="odometer">999</div>
+            <g style="vertical-align:middle"> wings</g>
           </div>
-          <div id="order-target-price" class="order-line-item-price">???</div>
+          <div id="order-target-price-container" class="order-line-item-price">
+            <g id="order-target-price-unknown" style="vertical-align:middle">???</g>
+            <g id="order-target-price-header" style="vertical-align:middle">$</g>
+            <div id="order-target-price"></div>
+          </div>
         </div>
         <div id="order-current" class="order-line">
           <div id="order-current-label" class="order-line-item-label">Your selection:</div>
           <div id="order-current-wings" class="order-line-item-wings">
-            <div id="order-current-wings-number" class="odometer">0</div><g style="vertical-align:middle"> wings</g>
+            <div id="order-current-wings-number" class="odometer">0</div>
+            <g style="vertical-align:middle"> wings</g>
           </div>
-          <div id="order-current-price" class="order-line-item-price">$0.00</div>
+          <div id="order-current-price-container" class="order-line-item-price">
+            <g style="vertical-align:middle">$</g>
+            <div id="order-current-price"></div>
+          </div>
         </div>
         <div id="order-message" class="order-message">
-          <g style="vertical-align:middle">Order from the menu items below to get to </g><div id="order-message-number" class="odometer">999</div><g style="vertical-align:middle"> wings!</g>
+          <g style="vertical-align:middle">Order from the menu items below to get to </g>
+          <div id="order-message-number" class="odometer">999</div>
+          <g style="vertical-align:middle"> wings!</g>
         </div>
         <div id="order-button-container" class="order-button-container">
           <div>
@@ -59,13 +70,16 @@
       <div id="menu-item-template" class="menu-item" style="display:none">
           <div id="wing-" class="wings">0 wings</div>
           <div id="cost-" class="cost">$0.00</div>
-          <div id="action-container" class="action-container">
+          <div id="action-container-" class="action-container">
             <div id="decrement-">
-              <button type="button" class="select-button"><</button>
+              <button type="button" id="decrement-button-" class="select-button"><</button>
             </div>
-            <div id="num-" class="num-selected">0</div>
+            <div id="num-" class="num-selected">
+              <g id="correct-"></g>
+              <g id="user-">0</g>
+            </div>
             <div id="increment-">
-              <button type="button" class="select-button">></button>
+              <button type="button" id="increment-button-" class="select-button">></button>
             </div>
           </div>
 
@@ -74,11 +88,6 @@
     </article>
     
     <script type="text/javascript">
-      // Set up odometer transition duration.
-      window.odometerOptions = {
-        duration: 1000
-      };
-
       // Parse all files together. Execute code in the callback.
       var files = ["data/menu_cost.csv", "data/optimal_wings.csv"];
       var parsed_files = [];
@@ -97,18 +106,70 @@
               console.log(menu_cost);
               console.log(optimal_wings);
 
-              // Build buttons.
-              buildMenuItems(menu_cost);
-
               // Rebuild the page with a new order.
+              var current_order; // Stores current order elements.
+              var target_wings; // Target number of wings to order.
+              var target_price; // Target price of optimal order, hidden.
               rebuildElements();
               function rebuildElements() {
-                var num_wings = makeNewOrder();
+                setUpCurrentPriceOdometer();
+                setTargetPriceVisibility(false, 0);
+                current_order = rebuildMenuItems(menu_cost, updateElements);
+                target_wings = makeNewOrder();
+                target_price = getTargetPrice();
               }
+
+              function getTargetPrice() {
+                let target_price = 0;
+                optimal_wings_row = optimal_wings.filter(obj => {
+                  return obj.wings == target_wings;
+                })[0];
+                for (let item_wings in optimal_wings_row) {
+                  if (item_wings != "wings") {
+                    item_quantity = parseInt(optimal_wings_row[item_wings], 10);
+                    item_cost = parseInt(menu_cost.filter(obj => {
+                      return parseInt(obj.wings, 10) == item_wings;
+                    })[0].cost, 10);
+                    target_price += item_quantity * item_cost;
+                    console.log(item_wings, item_quantity, item_cost, item_quantity*item_cost);
+                  }
+                }
+                return target_price;
+              }
+
+              // Function to update orders when menu counts
+              // are changed.
+              function updateElements() {
+                // Get total number of wings ordered, and current cost.
+                let current_wings = 0;
+                let current_cost = 0;
+                for (let item of current_order) {
+                  current_item_quantity = parseInt(item.current.innerHTML, 10);
+                  current_item_wings = item.wings * current_item_quantity;
+                  current_item_cost = item.cost * current_item_quantity;
+                  
+                  current_wings += current_item_wings;
+                  current_cost += current_item_cost;
+                }
+                // Set current order information.
+                setCurrentOrder(current_wings, current_cost);
+
+                // Allow us to check our answer if we have enough wings.
+                setCheckButtonStatus(current_wings >= target_wings);
+
+                console.log("update!!", current_wings, target_wings, current_cost);
+              }
+
+              console.log(current_order);
 
               // Assign callbacks.
               const reset_button = document.getElementById("order-button-reset");
-              reset_button.onclick = rebuildElements;  
+              reset_button.onclick = rebuildElements;
+
+              const check_button = document.getElementById("order-button-check");
+              check_button.onclick = function() {
+                checkAnswer(target_price);
+              };
             }
           }
         });
