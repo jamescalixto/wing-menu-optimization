@@ -6,6 +6,7 @@ function setUpCurrentPriceOdometer() {
         el: el,
         format: '(,ddd).ddd'
     });
+    el.innerText = 9.999; // Workaround for odometer.
 }
 
 // Set up a new odometer for target price.
@@ -16,7 +17,7 @@ function setUpTargetPriceOdometer(target_price) {
         el: el,
         format: '(,ddd).ddd'
     });
-    el.innerHTML = target_price / 100.0 + 0.001;
+    el.innerHTML = target_price / 100.0 + 0.001; // Workaround for odometer.
 }
 
 // Sets target price to revealed or not.
@@ -46,7 +47,7 @@ function makeNewOrder() {
 
     // Reset pricing information.
     document.getElementById("order-target-price").innerHTML = "???";
-    document.getElementById("order-current-price").innerHTML = "$0.00";
+    document.getElementById("order-current-price").innerHTML = "0.001";
 
     // Reset message.
     document.getElementById("order-message-number").innerHTML = target_wings;
@@ -63,7 +64,6 @@ function makeNewOrder() {
 function setCurrentOrder(current_wings, current_cost) {
     document.getElementById("order-current-wings-number").innerHTML = current_wings;
     let display_value = parseFloat((current_cost / 100.0).toFixed(2) + "1");
-    console.log(display_value);
     document.getElementById("order-current-price").innerHTML = display_value;
 }
 
@@ -159,16 +159,6 @@ function createMenuItem(wings, cost, update_function) {
     document.getElementById("button-container").appendChild(clone)
 
     return button_item;
-}
-
-// Displays everything of interest once the check button is clicked.
-function checkAnswer(target_price) {
-    setTargetPriceVisibility(true, target_price);
-}
-
-// Display menu item correction.
-function showMenuItemCorrection() {
-
 }
 
 // When you truly, absolutely need a test function that runs

@@ -18,11 +18,12 @@
   </head>
 
   <body>
+      <a href="http://jamescalixto.com"><img src="img/favicon.png" width="30px" height="30px" title="Return to jamescalixto.com" alt="Return to jamescalixto.com"  style="text-align:left; position:absolute"></a>
     <header>
       <div class="cross-title-background">
         <h1 class="cross-title">Are you better at ordering wings than a computer?</h1>
       </div>
-  
+        <h3>(Inspired by  <a href="https://twitter.com/seanposting/status/1054136447362629637" target="_blank">this tweet</a>).</h3>
     </header>
     <article id="article" >
 
@@ -50,6 +51,9 @@
             <div id="order-current-price"></div>
           </div>
         </div>
+        <div id="order-message-done" class="order-message">
+            <g style="vertical-align:middle">Congrats! You did it!</g>
+          </div>
         <div id="order-message" class="order-message">
           <g style="vertical-align:middle">Order from the menu items below to get to </g>
           <div id="order-message-number" class="odometer">999</div>
@@ -103,8 +107,11 @@
               menu_cost = parsed_files[0].data;
               optimal_wings = parsed_files[1].data;
 
-              console.log("menu_cost", menu_cost);
-              console.log("optimal_wings", optimal_wings);
+              // Hide target cost menu and such.
+              function hideMenuMessage() {
+                document.getElementById("order-message-done").style.display = "none";
+                document.getElementById("order-message").style.display = "inline";
+              }
 
               // Rebuild the page with a new order.
               var current_order; // Stores current order elements.
@@ -113,15 +120,16 @@
               var target_price; // Target price of optimal order, hidden.
               rebuildElements();
               function rebuildElements() {
+                hideMenuMessage();
                 setUpCurrentPriceOdometer();
                 setTargetPriceVisibility(false, 0);
                 current_order = rebuildMenuItems(menu_cost, updateElements);
                 target_wings = makeNewOrder();
                 target_price = getTargetPrice();
+                updateElements();
               }
 
-              console.log("optimal_wings_row", optimal_wings_row);
-
+              // Get optimal price of the wing order.
               function getTargetPrice() {
                 let target_price = 0;
                 optimal_wings_row = optimal_wings.filter(obj => {
@@ -161,7 +169,19 @@
                 setCheckButtonStatus(current_wings >= target_wings);
               }
 
-              console.log("current order", current_order);
+              // Show menu message.
+              function showMenuMessage(successful) {
+                document.getElementById("order-message-done").style.display = "inline";
+                document.getElementById("order-message").style.display = "none";
+                if (successful) {
+                  let message = "Impressive! You ordered optimally and tied the computer. Great job!"
+                  document.getElementById("order-message-done").innerText = message;
+                } else {
+                  let diff = ((current_cost - target_price) / 100.0).toFixed(2);
+                  let message =  "Sadly, you overpaid by $" + diff + ". Better luck next time."
+                  document.getElementById("order-message-done").innerText = message;
+                }
+              }
 
               // Assign callbacks.
               const reset_button = document.getElementById("order-button-reset");
@@ -172,10 +192,11 @@
               };
               check_button.onclick = function() {
                 check_button.disabled = true;
-                check_button.innerHTML = "<- Try again?";
+                check_button.innerHTML = "🠘 Try again?";
                 setTargetPriceVisibility(true, target_price);
                 if (target_price != current_cost) {
                   // Case where we did not get the optimal answer.
+                  showMenuMessage(false);
                   for (let item_wings in optimal_wings_row) {
                     if (item_wings != "wings") {
                       // For each item, get the quantity of the user order.
@@ -198,6 +219,7 @@
                   // The prices are equal - there may be more than one solution
                   // and we have a different one in the case, so this covers all possible
                   // optimal answers.
+                  showMenuMessage(true);
                   for (let item_wings in optimal_wings_row) {
                     if (item_wings != "wings") {
                       let item_element = current_order.filter(obj => {
