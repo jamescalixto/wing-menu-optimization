@@ -39,7 +39,10 @@ function makeNewOrder() {
     // Get a new order between the defined wing range.
     let MIN_WINGS = 10;
     let MAX_WINGS = 400;
-    var target_wings = Math.floor(Math.random() * (MAX_WINGS - MIN_WINGS + 1) ) + MIN_WINGS;
+    let SMALLER_BIAS = 2; // Exponent, to weight rng towards smaller numbers.
+    
+    let adj_random = Math.pow(Math.random(), SMALLER_BIAS);
+    var target_wings = Math.floor(adj_random * (MAX_WINGS - MIN_WINGS + 1) ) + MIN_WINGS;
 
     // Set target and current counters to target and 0, respectively.
     document.getElementById("order-target-wings-number").innerHTML = target_wings;
