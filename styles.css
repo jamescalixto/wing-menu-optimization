@@ -137,6 +137,7 @@ header {
     flex-wrap: wrap;
     justify-content: center;
     width: 90%;
+    max-width: 1150px;
 }
 
 .menu-item {
