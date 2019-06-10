@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Are you better at ordering wings than a computer?</title>
     <meta name="description" content="An integer linear programming approach to ordering wings."/>
@@ -179,16 +179,17 @@
                 }
               }
 
-              // Assign callbacks.
-              const reset_button = document.getElementById("order-button-reset");
-              const check_button = document.getElementById("order-button-check");
-              reset_button.onclick = function() {
+              // Reset button callback function.
+              function reset_button_callback() {
+                check_button.onclick = check_button_callback;
                 rebuildElements();
                 setCheckButtonStatus(false);
-              };
-              check_button.onclick = function() {
-                check_button.disabled = true;
-                check_button.innerHTML = "🠘 Try again?";
+              }
+
+              // Check button callback function.
+              function check_button_callback() {
+                check_button.onclick = reset_button_callback;
+                check_button.innerHTML = "Try again?";
                 setTargetPriceVisibility(true, target_price);
                 if (target_price != current_cost) {
                   // Case where we did not get the optimal answer.
@@ -226,6 +227,12 @@
                   }
                 }
               };
+
+              // Assign callbacks.
+              const reset_button = document.getElementById("order-button-reset");
+              const check_button = document.getElementById("order-button-check");
+              reset_button.onclick = reset_button_callback;
+              check_button.onclick = check_button_callback;
             }
           }
         });
