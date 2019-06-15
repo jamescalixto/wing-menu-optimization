@@ -165,7 +165,9 @@
                 setCheckButtonStatus(current_wings >= target_wings);
               }
 
-              // Show menu message.
+              // Show menu message. Either a "good job" kind of message or
+              // a "you tried" kind of message, depending on whether the
+              // order was optimal.
               function showMenuMessage(successful) {
                 document.getElementById("order-message-done").style.display = "inline";
                 document.getElementById("order-message").style.display = "none";

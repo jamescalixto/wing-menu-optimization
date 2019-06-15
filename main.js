@@ -70,7 +70,8 @@ function setCurrentOrder(current_wings, current_cost) {
     document.getElementById("order-current-price").innerHTML = display_value;
 }
 
-// Sets button status.
+// Sets check button status. Toggles between clickable (when the current order
+// has enough wings) and not clickable (when there aren't).
 function setCheckButtonStatus(enabled) {
     let check_button = document.getElementById("order-button-check");
     if (enabled) {
